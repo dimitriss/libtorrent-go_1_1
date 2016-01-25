@@ -1,5 +1,5 @@
-FROM dimitriss/cross-compiler:windows-x86
-MAINTAINER Dimitriss
+FROM anteo/cross-compiler:windows-x86
+MAINTAINER Anton Argirov "anton.argirov@gmail.com"
 
 RUN mkdir -p /build
 WORKDIR /build

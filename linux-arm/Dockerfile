@@ -1,5 +1,5 @@
-FROM dimitriss/cross-compiler:linux-arm
-MAINTAINER Dimitriss
+FROM anteo/cross-compiler:linux-arm
+MAINTAINER Anton Argirov "anton.argirov@gmail.com"
 
 RUN mkdir -p /build
 WORKDIR /build

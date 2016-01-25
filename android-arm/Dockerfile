@@ -1,5 +1,5 @@
-FROM dimitriss/cross-compiler:android-arm
-MAINTAINER Dimitriss
+FROM anteo/cross-compiler:android-arm
+MAINTAINER Anton Argirov "anton.argirov@gmail.com"
 
 RUN mkdir -p /build
 WORKDIR /build
