@@ -28,7 +28,7 @@ RUN ${CROSS_TRIPLE}-ranlib ${CROSS_ROOT}/lib/*.a
 # Install libtorrent
 # Changes:
 # - define WIN32, _UNICODE, IPV6_TCLASS=39
-ENV LIBTORRENT_VERSION 1.0.7
+ENV LIBTORRENT_VERSION 1.0.8
 RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-`echo ${LIBTORRENT_VERSION} | sed 's/\\./_/g'`/libtorrent-rasterbar-${LIBTORRENT_VERSION}.tar.gz | tar xvz && \
     cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
     sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
