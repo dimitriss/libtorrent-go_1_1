@@ -23,7 +23,7 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
     rm -rf `pwd`
 
 # Somehow this is needed or libtorrent complains about boost
-RUN ${CROSS_TRIPLE}-ranlib ${CROSS_ROOT}/lib/*.a
+# RUN ${CROSS_TRIPLE}-ranlib ${CROSS_ROOT}/lib/*.a
 
 # Install libtorrent
 # Changes:
