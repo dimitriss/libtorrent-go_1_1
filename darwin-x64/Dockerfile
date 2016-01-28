@@ -16,7 +16,7 @@ RUN cd boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`/ && \
     rm -rf `pwd`
 
 # Install OpenSSL
-ENV OPENSSL_VERSION 1.0.2e
+ENV OPENSSL_VERSION 1.0.2f
 RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | tar xvz && \
     cd openssl-${OPENSSL_VERSION}/ && \
     CROSS_COMPILE=${CROSS_TRIPLE}- ./Configure threads no-shared darwin64-x86_64-cc --prefix=${CROSS_ROOT} && \
@@ -45,7 +45,7 @@ RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-`e
 
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.5.3
+ENV GO_VERSION go1.6beta2
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
