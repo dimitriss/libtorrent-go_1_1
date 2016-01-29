@@ -47,12 +47,12 @@ ENV GO_VERSION go1.6beta2
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
-    CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
+    CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=6 CGO_ENABLED=1 ./make.bash
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${GO_VERSION}.tar.gz | tar xvz
 RUN cd /usr/local/go-${GO_VERSION}/src && \
 	echo go1.6beta > /usr/local/go-${GO_VERSION}/VERSION && \
-    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
+    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=6 CGO_ENABLED=1 ./make.bash
 ENV PATH ${PATH}:/usr/local/go-${GO_VERSION}/bin
 
 # Install SWIG

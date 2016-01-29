@@ -9,8 +9,7 @@ PLATFORMS = android-arm \
 			darwin-x64 \
 			linux-x86 \
 			linux-x64 \
-			linux-arm \
-			linux-armv6 \
+			linux-arm \			
 			windows-x86 \
 			windows-x64
 
