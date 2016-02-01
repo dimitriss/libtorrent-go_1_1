@@ -28,9 +28,6 @@ else ifeq ($(TARGET_ARCH),x64)
 	GOARCH = amd64
 else ifeq ($(TARGET_ARCH),arm)
 	GOARCH = arm
-	GOARM = 7
-else ifeq ($(TARGET_ARCH),armv6)
-	GOARCH = arm
 	GOARM = 6
 endif
 
