@@ -1,4 +1,4 @@
-FROM dimitriss/cross-compiler:linux-armv7
+FROM dimitriss/cross-compiler:linux-armv6
 MAINTAINER Dimitriss
 
 RUN mkdir -p /build
@@ -10,7 +10,7 @@ RUN curl -L http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/b
     cd boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`/ && \
     ./bootstrap.sh --prefix=${CROSS_ROOT} && \
     echo "using gcc : linux : ${CROSS_TRIPLE}-c++ ;" > ${HOME}/user-config.jam && \
-    ./b2 cxxflags=-fPIC cflags=-fPIC --with-date_time --with-system --prefix=${CROSS_ROOT} toolset=gcc-linux link=static variant=release threading=multi target-os=linux install && \
+    ./b2 --with-date_time --with-system --prefix=${CROSS_ROOT} toolset=gcc-linux link=static variant=release threading=multi target-os=linux install && \
     rm -rf ${HOME}/user-config.jam && \
     rm -rf `pwd`
 
@@ -18,7 +18,7 @@ RUN curl -L http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/b
 ENV OPENSSL_VERSION 1.0.2f
 RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | tar xvz && \
     cd openssl-${OPENSSL_VERSION}/ && \
-    CROSS_COMPILE=${CROSS_TRIPLE}- ./Configure threads no-shared linux-armv4 -fPIC --prefix=${CROSS_ROOT} && \
+    CROSS_COMPILE=${CROSS_TRIPLE}- ./Configure threads no-shared linux-armv4 --prefix=${CROSS_ROOT} && \
     make && make install && \
     rm -rf `pwd`
 
@@ -32,7 +32,7 @@ RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-`e
     \
     PKG_CONFIG_PATH=${CROSS_ROOT}/lib/pkgconfig/ \
     CC=${CROSS_TRIPLE}-gcc CXX=${CROSS_TRIPLE}-g++ \
-    CFLAGS="${CFLAGS} -O2 -fPIC" \
+    CFLAGS="${CFLAGS} -O2" \
     CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
     ./configure --enable-static --disable-shared --disable-geoip --disable-deprecated-functions \
     --host=${CROSS_TRIPLE} --prefix=${CROSS_ROOT} \
@@ -47,12 +47,12 @@ ENV GO_VERSION go1.6rc1
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
-    CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
+    CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=6 CGO_ENABLED=1 ./make.bash
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${GO_VERSION}.tar.gz | tar xvz
 RUN cd /usr/local/go-${GO_VERSION}/src && \
 	echo go1.6beta > /usr/local/go-${GO_VERSION}/VERSION && \
-    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
+    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=6 CGO_ENABLED=1 ./make.bash
 ENV PATH ${PATH}:/usr/local/go-${GO_VERSION}/bin
 
 # Install SWIG
