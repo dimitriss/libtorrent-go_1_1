@@ -1,4 +1,4 @@
-FROM dimitriss/cross-compiler:linux-armv6
+FROM dimitriss/cross-compiler:linux-arm
 MAINTAINER Dimitriss
 
 RUN mkdir -p /build
