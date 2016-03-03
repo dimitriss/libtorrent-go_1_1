@@ -10,7 +10,6 @@ PLATFORMS = android-arm \
 			linux-x86 \
 			linux-x64 \
 			linux-arm \
-			linux-armv7 \
 			windows-x86 \
 			windows-x64
 
@@ -29,12 +28,7 @@ else ifeq ($(TARGET_ARCH),x64)
 	GOARCH = amd64
 else ifeq ($(TARGET_ARCH),arm)
 	GOARCH = arm
-	GOARM = 6
-else ifeq ($(TARGET_ARCH), armv7)
-	GOARCH = arm
 	GOARM = 7
-	PATH_SUFFIX = v7
-	PKGDIR = -pkgdir /go/pkg/linux_armv7
 endif
 
 ifeq ($(TARGET_OS), windows)
