@@ -43,7 +43,7 @@ RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-`e
 
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.6
+ENV GO_VERSION go1.6.2
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
