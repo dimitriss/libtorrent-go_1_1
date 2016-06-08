@@ -3,5 +3,6 @@
 package libtorrent
 
 // #cgo pkg-config: libtorrent-rasterbar openssl
-// #cgo linux LDFLAGS: -lm -ldl
+// #cgo android CXXFLAGS: -Wno-deprecated-declarations
+// #cgo android LDFLAGS: -lm -ldl -lstdc++
 import "C"

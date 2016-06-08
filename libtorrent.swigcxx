@@ -1,6 +1,8 @@
 %module libtorrent
 
 %{
+#include <boost/chrono.hpp>
+#include <libtorrent/time.hpp>
 #include <libtorrent/session.hpp>
 %}
 
@@ -13,7 +15,7 @@
 #endif
 
 #define BOOST_POSIX_API
-#define TORRENT_NO_DEPRECATE
+#define BOOST_NO_TYPEID
 
 namespace std {
     typedef int time_t;
@@ -25,9 +27,12 @@ namespace boost {
 
 namespace libtorrent
 {
-    typedef int64_t size_type;
-    class ptime;
+    class time_point;
     class time_duration;
+
+    time_duration milliseconds(int64_t n) {
+        return boost::chrono::milliseconds(n);
+    }
 }
 
 %rename("%(camelcase)s", %$isclass) ""; 
@@ -44,6 +49,8 @@ namespace libtorrent
 %ignore libtorrent::session::add_extension;
 %ignore libtorrent::web_seed_entry;
 %ignore libtorrent::boosttime_nodeprecate_;
+%ignore libtorrent::boosttime_deprecated_;
+%ignore libtorrent::utp_status;
 
 %ignore libtorrent::time_now_string;
 %ignore libtorrent::merkle_num_leafs;
@@ -55,6 +62,7 @@ namespace libtorrent
 %ignore libtorrent::detail::get_file_attributes;
 %ignore libtorrent::log_time;
 %ignore libtorrent::parse_int;
+
 
 %include <boost/preprocessor/cat.hpp>
 %include <boost/version.hpp>
@@ -70,24 +78,21 @@ namespace libtorrent
 %include <libtorrent/export.hpp>
 %include <libtorrent/version.hpp>
 %include <libtorrent/build_config.hpp>
-%include <libtorrent/size_type.hpp>
 %include <libtorrent/error_code.hpp>
 %include <libtorrent/error.hpp>
 
+%include <libtorrent/time.hpp>
 %include <libtorrent/fingerprint.hpp>
 %include "bitfield.i"
 %include "socket.i"
 %include <libtorrent/address.hpp>
 %include "torrent_info.i"
-%include <libtorrent/session_settings.hpp>
-%include "peer_info.i"
-%include "torrent_handle.i"
-%include <libtorrent/session_status.hpp>
 %include "add_torrent_params.i"
+%include <libtorrent/session_settings.hpp>
+%include "torrent_handle.i"
 %include "alert.i"
 %include "alert_types.i"
-%include <libtorrent/ptime.hpp>
-%include <libtorrent/time.hpp>
+%include <libtorrent/session_status.hpp>
 %include "create_torrent.i"
 %include "dht.i"
 %include "session.i"
