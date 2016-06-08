@@ -5,13 +5,11 @@ CXX = c++
 PKG_CONFIG = pkg-config
 DOCKER = docker
 DOCKER_IMAGE = dimitriss/$(NAME)
-PLATFORMS = android-arm \
-			darwin-x64 \
+PLATFORMS = darwin-x64 \
 			linux-x86 \
 			linux-x64 \
 			linux-arm \
-			windows-x86 \
-			windows-x64
+			windows-x86
 
 include platform_host.mk
 
