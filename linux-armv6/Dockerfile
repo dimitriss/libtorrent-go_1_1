@@ -25,7 +25,7 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
 # Install libtorrent
 ENV LIBTORRENT_VERSION 1.1.0
 RUN echo "#define BOOST_SP_USE_PTHREADS" >> ${CROSS_ROOT}/include/boost/config/user.hpp
-RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/libtorrent-rasterbar-${LIBTORRENT_VERSION}.tar.gz | tar xvz && \
+RUN curl -L https://www.dropbox.com/s/5i66oymbaviav5k/libtorrent-rasterbar-1.1.0.tar.gz?dl=1 | tar xvz && \
     cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
     sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
     sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \
@@ -34,7 +34,7 @@ RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_
     CC=${CROSS_TRIPLE}-gcc CXX=${CROSS_TRIPLE}-g++ \
     CFLAGS="${CFLAGS} -O2" \
     CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
-    ./configure --enable-static --disable-shared --disable-geoip --disable-deprecated-functions \
+    ./configure --enable-static --disable-shared --disable-pool-allocators --disable-geoip \
     --host=${CROSS_TRIPLE} --prefix=${CROSS_ROOT} \
     --with-boost=${CROSS_ROOT} --with-boost-libdir=${CROSS_ROOT}/lib && \
     \
@@ -43,7 +43,7 @@ RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_
 
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.6.2
+ENV GO_VERSION go1.7beta1
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
