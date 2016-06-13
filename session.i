@@ -22,6 +22,7 @@ namespace libtorrent
 %ignore libtorrent::session_handle::dht_put_item;
 %ignore libtorrent::session_handle::set_dht_storage;
 %ignore libtorrent::session_handle::set_alert_queue_size_limit;
+%ignore libtorrent::session_handle::add_extension;
 
 %template(std_vector_torrent_handle) std::vector<libtorrent::torrent_handle>;
 
