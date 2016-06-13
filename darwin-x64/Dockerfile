@@ -26,7 +26,7 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
 
 # Install libtorrent
 ENV LIBTORRENT_VERSION 1.1.0
-RUN curl -L https://www.dropbox.com/s/5i66oymbaviav5k/libtorrent-rasterbar-1.1.0.tar.gz?dl=1 | tar xvz && \
+RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/libtorrent-rasterbar-1.1.0.tar.gz | tar xvz && \
     cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
     sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
     sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \
@@ -35,7 +35,7 @@ RUN curl -L https://www.dropbox.com/s/5i66oymbaviav5k/libtorrent-rasterbar-1.1.0
     CC=${CROSS_TRIPLE}-cc CXX=${CROSS_TRIPLE}-c++ \
     CFLAGS="${CFLAGS} -O2" \
     CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
-    ./configure --enable-static --disable-shared --disable-pool-allocators --disable-geoip \
+    ./configure --enable-static --disable-shared --disable-geoip \
     --host=${CROSS_TRIPLE} --prefix=${CROSS_ROOT} \
     --with-boost=${CROSS_ROOT} --with-boost-libdir=${CROSS_ROOT}/lib && \
     \
