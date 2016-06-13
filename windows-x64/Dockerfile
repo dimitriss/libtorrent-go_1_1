@@ -23,18 +23,19 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
     rm -rf `pwd`
 
 # Somehow this is needed or libtorrent complains about boost
-# RUN ${CROSS_TRIPLE}-ranlib ${CROSS_ROOT}/lib/*.a
+RUN ${CROSS_TRIPLE}-ranlib ${CROSS_ROOT}/lib/*.a
 
 # Install libtorrent
 # Changes:
 # - define WIN32, _UNICODE, IPV6_TCLASS=39
 ENV LIBTORRENT_VERSION 1.1.0
-RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/libtorrent-rasterbar-1.1.0.tar.gz | tar xvz && \
+RUN curl -L https://github.com/dimitriss/libtorrent/releases/download/RC_1_1_lt-go/libtorrent-rasterbar-1.1.0.tar.gz | tar xvz && \
     cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
     sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
     sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \
+	touch configure.ac aclocal.m4 configure Makefile.am Makefile.in && \
     \
-    #PKG_CONFIG_PATH=${CROSS_ROOT}/lib/pkgconfig/ \
+    PKG_CONFIG_PATH=${CROSS_ROOT}/lib/pkgconfig/ \
     CC=${CROSS_TRIPLE}-cc CXX=${CROSS_TRIPLE}-c++ \
     CFLAGS="${CFLAGS} -O2 -DUNICODE -D_UNICODE -DWIN32 -DIPV6_TCLASS=39" \
     CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
