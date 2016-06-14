@@ -1,4 +1,4 @@
-FROM dimitriss/cross-compiler:linux-arm
+FROM dimitriss/cross-compiler:android-arm
 MAINTAINER Dimitriss
 
 RUN mkdir -p /build
@@ -9,8 +9,8 @@ ENV BOOST_VERSION 1.61.0
 RUN curl -L http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`.tar.bz2/download | tar xvj && \
     cd boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`/ && \
     ./bootstrap.sh --prefix=${CROSS_ROOT} && \
-    echo "using gcc : linux : ${CROSS_TRIPLE}-c++ ;" > ${HOME}/user-config.jam && \
-    ./b2 cxxflags=-fPIC cflags=-fPIC --with-date_time --with-system --with-chrono --with-random --prefix=${CROSS_ROOT} toolset=gcc-linux link=static variant=release threading=multi target-os=linux install && \
+    echo "using gcc : android : ${CROSS_TRIPLE}-c++ ;" > ${HOME}/user-config.jam && \
+    ./b2 --with-date_time --with-system --with-chrono --with-random --prefix=${CROSS_ROOT} toolset=gcc-android link=static variant=release threading=multi target-os=linux install && \
     rm -rf ${HOME}/user-config.jam && \
     rm -rf `pwd`
 
@@ -18,7 +18,7 @@ RUN curl -L http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/b
 ENV OPENSSL_VERSION 1.0.2h
 RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | tar xvz && \
     cd openssl-${OPENSSL_VERSION}/ && \
-    CROSS_COMPILE=${CROSS_TRIPLE}- ./Configure threads no-shared linux-armv4 -fPIC --prefix=${CROSS_ROOT} && \
+    CROSS_COMPILE=${CROSS_TRIPLE}- ./Configure threads no-shared linux-armv4 --prefix=${CROSS_ROOT} && \
     make && make install && \
     rm -rf `pwd`
 
@@ -29,13 +29,12 @@ RUN curl -L https://github.com/dimitriss/libtorrent/releases/download/RC_1_1_lt-
     cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
     sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
     sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \
-    touch configure.ac aclocal.m4 configure Makefile.am Makefile.in && \
     \
     PKG_CONFIG_PATH=${CROSS_ROOT}/lib/pkgconfig/ \
     CC=${CROSS_TRIPLE}-gcc CXX=${CROSS_TRIPLE}-g++ \
-    CFLAGS="${CFLAGS} -O2 -fPIC" \
+    CFLAGS="${CFLAGS} -O2 -DINT64_MAX=0x7fffffffffffffffLL -DINT16_MAX=32767 -DINT16_MIN=-32768 -DTORRENT_PRODUCTION_ASSERTS" \
     CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
-    ./configure --enable-static --disable-shared --disable-geoip \
+    ./configure --enable-static --disable-shared --disable-pool-allocators --disable-geoip --disable-deprecated-functions \
     --host=${CROSS_TRIPLE} --prefix=${CROSS_ROOT} \
     --with-boost=${CROSS_ROOT} --with-boost-libdir=${CROSS_ROOT}/lib && \
     \
@@ -48,12 +47,12 @@ ENV GO_VERSION go1.7beta1
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
-    CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
+    CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=android GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${GO_VERSION}.tar.gz | tar xvz
 RUN cd /usr/local/go-${GO_VERSION}/src && \
 	echo go1.6beta > /usr/local/go-${GO_VERSION}/VERSION && \
-    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
+    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=android GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
 ENV PATH ${PATH}:/usr/local/go-${GO_VERSION}/bin
 
 # Install SWIG
