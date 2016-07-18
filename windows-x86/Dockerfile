@@ -56,7 +56,7 @@ RUN cd /usr/local && \
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${GO_VERSION}.tar.gz | tar xvz
 RUN cd /usr/local/go-${GO_VERSION}/src && \
-	echo go1.6beta > /usr/local/go-${GO_VERSION}/VERSION && \
+	echo ${GO_VERSION} > /usr/local/go-${GO_VERSION}/VERSION && \
     GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=windows GOARCH=386 CGO_ENABLED=1 ./make.bash
 ENV PATH ${PATH}:/usr/local/go-${GO_VERSION}/bin
 
