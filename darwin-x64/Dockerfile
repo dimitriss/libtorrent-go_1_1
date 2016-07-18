@@ -26,7 +26,7 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
 
 # Install libtorrent
 ENV LIBTORRENT_VERSION 1.1.0
-RUN curl -L https://github.com/dimitriss/libtorrent/releases/download/RC_1_1_lt-go/libtorrent-rasterbar-1.1.0.tar.gz | tar xvz && \
+RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/libtorrent-rasterbar-1.1.0.tar.gz | tar xvz && \
     cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
     sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
     sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \
@@ -46,7 +46,7 @@ RUN curl -L https://github.com/dimitriss/libtorrent/releases/download/RC_1_1_lt-
 
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.7beta1
+ENV GO_VERSION go1.7rc1
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
@@ -59,7 +59,7 @@ RUN cd /usr/local/go-${GO_VERSION}/src && \
 ENV PATH ${PATH}:/usr/local/go-${GO_VERSION}/bin
 
 # Install SWIG
-ENV SWIG_VERSION 3.0.9
+ENV SWIG_VERSION 3.0.10
 RUN apt-get update && apt-get install -y automake libpcre3-dev bison yodl
 RUN curl -L https://github.com/swig/swig/archive/rel-${SWIG_VERSION}.tar.gz | tar xvz && \
     cd swig-rel-${SWIG_VERSION}/ && \

@@ -10,6 +10,7 @@ PLATFORMS = android-arm \
 			linux-x86 \
 			linux-x64 \
 			linux-arm \
+			linux-arm64 \
 			windows-x86 \
 			windows-x64
 
@@ -29,6 +30,9 @@ else ifeq ($(TARGET_ARCH),x64)
 else ifeq ($(TARGET_ARCH),arm)
 	GOARCH = arm
 	GOARM = 7
+else ifeq ($(TARGET_ARCH), arm64)
+	GOARCH = arm64
+	GOARM =
 endif
 
 ifeq ($(TARGET_OS), windows)

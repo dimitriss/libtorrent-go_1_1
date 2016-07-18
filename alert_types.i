@@ -27,7 +27,7 @@ namespace libtorrent {
 }
 %ignore libtorrent::save_resume_data_alert::resume_data;
 
-//%ignore libtorrent::torrent_alert::torrent_alert;
+%ignore libtorrent::torrent_alert::torrent_alert;
 %ignore libtorrent::peer_alert::peer_alert;
 %ignore libtorrent::tracker_alert::tracker_alert;
 %ignore libtorrent::peer_log_alert;
