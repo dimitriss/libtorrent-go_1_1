@@ -44,36 +44,20 @@ RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_
     make && make install && \
     rm -rf `pwd`
 
-
 # Install Golang
-ENV GOLANG_VERSION 1.7rc1
-ENV GOLANG_SRC_URL https://golang.org/dl/go$GOLANG_VERSION.src.tar.gz
-ENV GOLANG_SRC_SHA256 88840e78905bdff7c8e408385182b4f77e8bdd062cac5c0c6382630588d426c7
+ENV BOOTSTRAP_GO_VERSION go1.4.3
+ENV GO_VERSION go1.7rc1
+RUN cd /usr/local && \
+    curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
+    cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
+    CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm64 GOARM= CGO_ENABLED=1 ./make.bash
+RUN cd /usr/local && \
+    curl -L https://github.com/golang/go/archive/${GO_VERSION}.tar.gz | tar xvz
+RUN cd /usr/local/go-${GO_VERSION}/src && \
+	echo go1.6beta > /usr/local/go-${GO_VERSION}/VERSION && \
+    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
+ENV PATH ${PATH}:/usr/local/go-${GO_VERSION}/bin
 
-ENV GOLANG_BOOTSTRAP_VERSION 1.4.3
-ENV GOLANG_BOOTSTRAP_URL https://golang.org/dl/go$GOLANG_BOOTSTRAP_VERSION.src.tar.gz
-ENV GOLANG_BOOTSTRAP_SHA1 486db10dc571a55c8d795365070f66d343458c48
-
-RUN set -ex \
-  && mkdir -p /usr/local/bootstrap \
-  && wget -q "$GOLANG_BOOTSTRAP_URL" -O golang.tar.gz \
-  && echo "$GOLANG_BOOTSTRAP_SHA1  golang.tar.gz" | sha1sum -c - \
-  && tar -C /usr/local/bootstrap -xzf golang.tar.gz \
-  && rm golang.tar.gz \
-  && cd /usr/local/bootstrap/go/src \
-  && ./make.bash 1>golang.log 2>golang.err \
-  && export GOROOT_BOOTSTRAP=/usr/local/bootstrap/go \
-  \
-  && wget -q "$GOLANG_SRC_URL" -O golang.tar.gz \
-  && echo "$GOLANG_SRC_SHA256  golang.tar.gz" | sha256sum -c - \
-  && tar -C /usr/local -xzf golang.tar.gz \
-  && rm golang.tar.gz \
-  && cd /usr/local/go/src \
-  && ./make.bash 1>golang.log 2>golang.err \
-  \
-  && CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm64 CGO_ENABLED=1 ./make.bash --no-clean \
-  && rm -rf /usr/local/bootstrap /usr/local/go/pkg/bootstrap
-ENV PATH ${PATH}:/usr/local/go/bin
 
 # Install SWIG
 ENV SWIG_VERSION 3.0.10
