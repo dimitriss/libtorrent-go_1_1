@@ -20,6 +20,10 @@ else ifneq ($(findstring i586, $(GCC_TARGET)),)
     TARGET_ARCH = x86
 else ifneq ($(findstring i686, $(GCC_TARGET)),)
     TARGET_ARCH = x86
+else ifneq ($(findstring aarch64, $(GCC_TARGET)),)
+    TARGET_ARCH = arm64
+else ifneq ($(findstring armv6, $(GCC_TARGET)),)
+    TARGET_ARCH = armv6
 else ifneq ($(findstring arm, $(GCC_TARGET)),)
     TARGET_ARCH = arm
 endif
