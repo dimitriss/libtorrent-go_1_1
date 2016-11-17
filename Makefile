@@ -1,3 +1,5 @@
+
+
 NAME = libtorrent-go
 GO_PACKAGE = github.com/dimitriss/$(NAME)
 CC = cc
@@ -5,14 +7,11 @@ CXX = c++
 PKG_CONFIG = pkg-config
 DOCKER = docker
 DOCKER_IMAGE = dimitriss/$(NAME)
-PLATFORMS = android-arm \
-			darwin-x64 \
-			linux-x86 \
-			linux-x64 \
-			linux-arm \
-			linux-arm64 \
-			windows-x86 \
-			windows-x64
+PLATFORMS = linux-arm64 \
+		linux-arm \
+		linux-x86 \
+		linux-x64 \
+		windows-x86
 
 include platform_host.mk
 

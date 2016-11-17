@@ -5,7 +5,7 @@ RUN mkdir -p /build
 WORKDIR /build
 
 # Install Boost.System
-ENV BOOST_VERSION 1.61.0
+ENV BOOST_VERSION 1.62.0
 RUN curl -L http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`.tar.bz2/download | tar xvj && \
     cd boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`/ && \
     ./bootstrap.sh --prefix=${CROSS_ROOT} && \
@@ -15,42 +15,20 @@ RUN curl -L http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/b
     rm -rf `pwd`
 
 # Install OpenSSL
-ENV OPENSSL_VERSION 1.0.2h
+ENV OPENSSL_VERSION 1.0.2j
 RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | tar xvz && \
     cd openssl-${OPENSSL_VERSION}/ && \
     CROSS_COMPILE=${CROSS_TRIPLE}- ./Configure threads no-shared linux-armv4 -fPIC --prefix=${CROSS_ROOT} && \
     make && make install && \
     rm -rf `pwd`
 
-# Install libtorrent
-ENV LIBTORRENT_VERSION 1.1.0
-RUN echo "#define BOOST_SP_USE_PTHREADS" >> ${CROSS_ROOT}/include/boost/config/user.hpp
-RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/libtorrent-rasterbar-1.1.0.tar.gz | tar xvz && \
-    cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
-    sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
-    sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \
-    sed -i '/-msse4.2/d' configure && \
-    sed -i '/-msse4.2/d' configure.ac && \
-	touch configure.ac aclocal.m4 configure Makefile.am Makefile.in && \
-    \
-    PKG_CONFIG_PATH=${CROSS_ROOT}/lib/pkgconfig/ \
-    CC=${CROSS_TRIPLE}-gcc CXX=${CROSS_TRIPLE}-g++ \
-    CFLAGS="${CFLAGS} -O2 -fPIC" \
-    CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
-    ./configure --enable-static --disable-shared --disable-geoip \
-    --host=${CROSS_TRIPLE} --prefix=${CROSS_ROOT} \
-    --with-boost=${CROSS_ROOT} --with-boost-libdir=${CROSS_ROOT}/lib && \
-    \
-    make && make install && \
-    rm -rf `pwd`
-
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.7rc1
+ENV GO_VERSION go1.7.3
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
-    CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
+    CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=0 ./make.bash
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${GO_VERSION}.tar.gz | tar xvz
 RUN cd /usr/local/go-${GO_VERSION}/src && \
@@ -65,6 +43,28 @@ RUN curl -L https://github.com/swig/swig/archive/rel-${SWIG_VERSION}.tar.gz | ta
     cd swig-rel-${SWIG_VERSION}/ && \
     ./autogen.sh && \
     ./configure && make && make install && \
+    rm -rf `pwd`
+
+# Install libtorrent
+ENV LIBTORRENT_VERSION 1.1.1
+RUN echo "#define BOOST_SP_USE_PTHREADS" >> ${CROSS_ROOT}/include/boost/config/user.hpp
+RUN curl -L https://github.com/dimitriss/libtorrent/releases/download/lt1.1.1_14_11_2016/libtorrent-rasterbar-1.1.1.tar.gz | tar xvz && \
+    cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
+    sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
+    sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \
+    sed -i '/-msse4.2/d' configure && \
+    sed -i '/-msse4.2/d' configure.ac && \
+        touch configure.ac aclocal.m4 configure Makefile.am Makefile.in && \
+    \
+    PKG_CONFIG_PATH=${CROSS_ROOT}/lib/pkgconfig/ \
+    CC=${CROSS_TRIPLE}-gcc CXX=${CROSS_TRIPLE}-g++ \
+    CFLAGS="${CFLAGS} -Ofast -fPIC" \
+    CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
+    ./configure --enable-static --disable-shared --disable-geoip \
+    --host=${CROSS_TRIPLE} --prefix=${CROSS_ROOT} \
+    --with-boost=${CROSS_ROOT} --with-boost-libdir=${CROSS_ROOT}/lib && \
+    \
+    make && make install && \
     rm -rf `pwd`
 
 WORKDIR /

@@ -10,7 +10,7 @@ RUN curl -L http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/b
 RUN cd boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`/ && \
     ./bootstrap.sh --prefix=${CROSS_ROOT} && \
     echo "using clang : darwin : ${CROSS_TRIPLE}-c++ ;" > ${HOME}/user-config.jam && \
-    ./b2 --with-date_time --with-system --with-chrono --with-random --prefix=${CROSS_ROOT} toolset=clang-darwin link=static variant=release threading=multi target-os=darwin install && \
+    ./b2 --with-date_time --with-system --with-chrono --with-random --prefix=${CROSS_ROOT} toolset=clang-darwin cxxflags="-std=c++11 -stdlib=libc++" linkflags="-stdlib=libc++" link=static variant=release threading=multi target-os=darwin install && \
     ${CROSS_TRIPLE}-ranlib ${CROSS_ROOT}/lib/*.a && \
     rm -rf ${HOME}/user-config.jam && \
     rm -rf `pwd`
@@ -24,29 +24,9 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
     ${CROSS_TRIPLE}-ranlib ${CROSS_ROOT}/lib/*.a && \
     rm -rf `pwd`
 
-# Install libtorrent
-ENV LIBTORRENT_VERSION 1.1.0
-RUN curl -L https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1/libtorrent-rasterbar-1.1.0.tar.gz | tar xvz && \
-    cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
-    sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
-    sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \
-	touch configure.ac aclocal.m4 configure Makefile.am Makefile.in && \
-    \
-    OSXCROSS_PKG_CONFIG_PATH=${CROSS_ROOT}/lib/pkgconfig/ \
-    CC=${CROSS_TRIPLE}-cc CXX=${CROSS_TRIPLE}-c++ \
-    CFLAGS="${CFLAGS} -O2" \
-    CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
-    ./configure --enable-static --disable-shared --disable-geoip \
-    --host=${CROSS_TRIPLE} --prefix=${CROSS_ROOT} \
-    --with-boost=${CROSS_ROOT} --with-boost-libdir=${CROSS_ROOT}/lib && \
-    \
-    make && make install && \
-    ${CROSS_TRIPLE}-ranlib ${CROSS_ROOT}/lib/*.a && \
-    rm -rf `pwd`
-
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.7rc1
+ENV GO_VERSION go1.7.1
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
@@ -54,7 +34,7 @@ RUN cd /usr/local && \
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${GO_VERSION}.tar.gz | tar xvz
 RUN cd /usr/local/go-${GO_VERSION}/src && \
-	echo ${GO_VERSION} > /usr/local/go-${GO_VERSION}/VERSION && \
+	echo go1.6beta > /usr/local/go-${GO_VERSION}/VERSION && \
     GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 ./make.bash
 ENV PATH ${PATH}:/usr/local/go-${GO_VERSION}/bin
 
@@ -66,6 +46,33 @@ RUN curl -L https://github.com/swig/swig/archive/rel-${SWIG_VERSION}.tar.gz | ta
     ./autogen.sh && \
     ./configure && make && make install && \
     rm -rf `pwd`
+
+
+# Install libtorrent
+ENV LIBTORRENT_VERSION 1.1.1
+RUN curl -L https://github.com/dimitriss/libtorrent/releases/download/RC_1_1_21_08/libtorrent-rasterbar-1.1.1.tar.gz | tar xvz && \
+    cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
+    ./autotool.sh && \
+    \
+    sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
+    sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \
+    \
+    OSXCROSS_PKG_CONFIG_PATH=${CROSS_ROOT}/lib/pkgconfig/ \
+    CC=${CROSS_TRIPLE}-cc CXX=${CROSS_TRIPLE}-c++ \
+    CFLAGS="${CFLAGS} -O2 -mmacosx-version-min=10.7" \
+    CXXFLAGS="${CXXFLAGS} ${CFLAGS} -O2" \
+    ./configure \
+        --enable-static \
+        --disable-shared \
+        --host=${CROSS_TRIPLE} \
+        --prefix=${CROSS_ROOT} \
+        --with-boost=${CROSS_ROOT} --with-boost-libdir=${CROSS_ROOT}/lib && \
+    \
+    make && make install && \
+    ${CROSS_TRIPLE}-ranlib ${CROSS_ROOT}/lib/*.a && \
+    rm -rf `pwd`
+
+
 
 WORKDIR /
 RUN rm -rf /build
