@@ -5,7 +5,7 @@ RUN mkdir -p /build
 WORKDIR /build
 
 # Install Boost.System
-ENV BOOST_VERSION 1.62.0
+ENV BOOST_VERSION 1.63.0
 RUN curl -L http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`.tar.bz2/download | tar xvj && \
     cd boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`/ && \
     ./bootstrap.sh --prefix=${CROSS_ROOT} && \
@@ -24,7 +24,7 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
 
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.7.3
+ENV GO_VERSION go1.7.4
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
@@ -37,7 +37,7 @@ RUN cd /usr/local/go-${GO_VERSION}/src && \
 ENV PATH ${PATH}:/usr/local/go-${GO_VERSION}/bin
 
 # Install SWIG
-ENV SWIG_VERSION 3.0.10
+ENV SWIG_VERSION 3.0.11
 RUN apt-get update && apt-get install -y automake libpcre3-dev bison yodl
 RUN curl -L https://github.com/swig/swig/archive/rel-${SWIG_VERSION}.tar.gz | tar xvz && \
     cd swig-rel-${SWIG_VERSION}/ && \
@@ -48,7 +48,7 @@ RUN curl -L https://github.com/swig/swig/archive/rel-${SWIG_VERSION}.tar.gz | ta
 # Install libtorrent
 ENV LIBTORRENT_VERSION 1.1.1
 RUN echo "#define BOOST_SP_USE_PTHREADS" >> ${CROSS_ROOT}/include/boost/config/user.hpp
-RUN curl -L https://github.com/dimitriss/libtorrent/releases/download/lt1.1.1_14_11_2016/libtorrent-rasterbar-1.1.1.tar.gz | tar xvz && \
+RUN curl -L https://github.com/dimitriss/libtorrent/releases/download/lt1.1.1_LATEST/libtorrent-rasterbar-1.1.1.tar.gz | tar xvz && \
     cd libtorrent-rasterbar-${LIBTORRENT_VERSION}/ && \
     sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
     sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \

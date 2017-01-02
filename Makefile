@@ -1,5 +1,3 @@
-
-
 NAME = libtorrent-go
 GO_PACKAGE = github.com/dimitriss/$(NAME)
 CC = cc
