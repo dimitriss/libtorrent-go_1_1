@@ -10,8 +10,6 @@ else
     UNAME_M := $(shell uname -m)
     ifeq ($(UNAME_S), Linux)
         HOST_OS = linux
-    else ifeq ($(UNAME_S), Darwin)
-        HOST_OS = darwin
     endif
     ifeq ($(UNAME_M), x86_64)
         HOST_ARCH = x64

@@ -1,11 +1,7 @@
 GCC_TARGET = $(CC)
 
-ifneq ($(findstring darwin, $(GCC_TARGET)),)
-    TARGET_OS = darwin
-else ifneq ($(findstring mingw, $(GCC_TARGET)),)
+ifneq ($(findstring mingw, $(GCC_TARGET)),)
     TARGET_OS = windows
-else ifneq ($(findstring android, $(GCC_TARGET)),)
-    TARGET_OS = android
 else ifneq ($(findstring linux, $(GCC_TARGET)),)
     TARGET_OS = linux
 endif

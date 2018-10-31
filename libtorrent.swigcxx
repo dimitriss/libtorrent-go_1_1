@@ -29,6 +29,7 @@ namespace libtorrent
 {
     class time_point;
     class time_duration;
+    class peer_class_t;
 
     time_duration milliseconds(int64_t n) {
         return boost::chrono::milliseconds(n);
@@ -66,7 +67,7 @@ namespace libtorrent
 
 %include <boost/preprocessor/cat.hpp>
 %include <boost/version.hpp>
-%include <boost/config/suffix.hpp>
+%include <boost/config/detail/suffix.hpp>
 %include <boost/system/config.hpp>
 %include <boost/system/error_code.hpp>
 %include <boost/asio/detail/config.hpp>

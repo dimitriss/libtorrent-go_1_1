@@ -19,6 +19,7 @@ namespace libtorrent
 
 // These are problematic, so we ignore them.
 %ignore libtorrent::session_handle::get_ip_filter;
+%ignore libtorrent::session_handle::get_peer_class_filter;
 %ignore libtorrent::session_handle::dht_put_item;
 %ignore libtorrent::session_handle::set_dht_storage;
 %ignore libtorrent::session_handle::set_alert_queue_size_limit;

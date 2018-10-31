@@ -7,9 +7,11 @@ DOCKER = docker
 DOCKER_IMAGE = dimitriss/$(NAME)
 PLATFORMS = linux-arm64 \
 		linux-arm \
-		linux-x86 \
 		linux-x64 \
+		linux-x86 \
+		windows-x64 \
 		windows-x86
+
 
 include platform_host.mk
 
@@ -34,13 +36,8 @@ endif
 
 ifeq ($(TARGET_OS), windows)
 	GOOS = windows
-else ifeq ($(TARGET_OS), darwin)
-	GOOS = darwin
 else ifeq ($(TARGET_OS), linux)
 	GOOS = linux
-else ifeq ($(TARGET_OS), android)
-	GOOS = android
-	GOARM = 7
 endif
 
 ifneq ($(CROSS_ROOT),)
@@ -60,13 +57,10 @@ ifeq ($(TARGET_OS), windows)
 	ifeq ($(TARGET_ARCH), x64)
 		CC_DEFINES += -DSWIGWORDSIZE32
 	endif
-else ifeq ($(TARGET_OS), darwin)
-	CC_DEFINES += -DSWIGMAC
-	CC_DEFINES += -DBOOST_HAS_PTHREADS
 endif
 
 
-OUT_PATH = $(shell go env GOPATH)/pkg/$(GOOS)_$(GOARCH)
+OUT_PATH = $(shell go env GOPATH)/pkg/$(GOOS)_$(GOARCH)$(PATH_SUFFIX)
 OUT_LIBRARY = $(OUT_PATH)/$(GO_PACKAGE).a
 
 .PHONY: $(PLATFORMS)
@@ -83,7 +77,7 @@ build:
 	CGO_ENABLED=1 \
 	GOOS=$(GOOS) GOARCH=$(GOARCH) GOARM=$(GOARM) \
 	PATH=.:$$PATH \
-	go install -v -x
+	go install -v -x $(PKGDIR)
 
 clean:
 	rm -rf $(OUT_LIBRARY)
@@ -92,5 +86,5 @@ re: clean build
 
 env:
 	for i in $(PLATFORMS); do \
-		$(DOCKER) build -t $(DOCKER_IMAGE):$$i $$i ; \
+		$(DOCKER) build -t $(DOCKER_IMAGE):$$i $$i; \
 	done
