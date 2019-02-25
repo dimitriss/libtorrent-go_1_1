@@ -5,7 +5,7 @@ RUN mkdir -p /build
 WORKDIR /build
 
 # Install Boost.System
-ENV BOOST_VERSION 1.67.0
+ENV BOOST_VERSION 1.679.0
 RUN curl -L https://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`.tar.bz2 | tar xvj && \
     cd boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`/ && \
     ./bootstrap.sh --prefix=${CROSS_ROOT} && \
@@ -24,7 +24,7 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
 
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.11.1
+ENV GO_VERSION go1.11.5
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \

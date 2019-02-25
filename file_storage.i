@@ -1,5 +1,6 @@
 %{
 #include <libtorrent/file_storage.hpp>
+#include <libtorrent/settings_pack.hpp>
 %}
 
 namespace libtorrent
@@ -9,3 +10,4 @@ namespace libtorrent
 
 %include <libtorrent/storage_defs.hpp>
 %include <libtorrent/file_storage.hpp>
+%include <libtorrent/settings_pack.hpp>
