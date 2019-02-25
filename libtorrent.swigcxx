@@ -95,8 +95,8 @@ namespace libtorrent
 %include <libtorrent/export.hpp>
 %include <libtorrent/version.hpp>
 %include <libtorrent/build_config.hpp>
-%include <libtorrent/error_code.hpp>
-%include <libtorrent/error.hpp>
+//%include <libtorrent/error_code.hpp>
+//%include <libtorrent/error.hpp>
 
 %include <libtorrent/time.hpp>
 %include <libtorrent/fingerprint.hpp>
