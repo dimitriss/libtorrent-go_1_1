@@ -85,7 +85,7 @@ namespace libtorrent
 %include <boost/version.hpp>
 %include <boost/config/detail/suffix.hpp>
 %include <boost/system/config.hpp>
-%include <boost/system/error_code.hpp>
+//%include <boost/system/error_code.hpp>
 %include <boost/asio/detail/config.hpp>
 %include <boost/asio/error.hpp>
 
