@@ -57,7 +57,7 @@ RUN curl -L https://github.com/arvidn/libtorrent/archive/`echo ${LIBTORRENT_VERS
     \
     PKG_CONFIG_PATH=${CROSS_ROOT}/lib/pkgconfig/ \
     CC=${CROSS_TRIPLE}-cc CXX=${CROSS_TRIPLE}-c++ \
-    CFLAGS="${CFLAGS} -Os -Wno-psabi -Wno-deprecated-declarations -Wno-sign-compare -Wno-unused-function -Wno-unused-parameter -std=c++11 -lmswsock -DUNICODE -D_UNICODE -DWIN32 -DIPV6_TCLASS=39" \
+    CFLAGS="${CFLAGS} -Os -Wno-psabi -Wno-sign-compare -Wno-unused-function -Wno-unused-parameter -std=c++11 -lmswsock -DUNICODE -D_UNICODE -DWIN32 -DIPV6_TCLASS=39" \
     CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
     LIBS="-lmswsock" \
     ./configure --disable-debug --enable-logging=no --enable-static --disable-shared --disable-deprecated-functions \
