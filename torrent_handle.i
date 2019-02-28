@@ -1,7 +1,8 @@
 %{
-#include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
+#include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_status.hpp>
+#include <libtorrent/torrent.hpp>
 #include <libtorrent/entry.hpp>
 #include <libtorrent/announce_entry.hpp>
 %}
@@ -10,12 +11,10 @@
 %include <std_pair.i>
 %include <carrays.i>
 
-%template(std_vector_partial_piece_info) std::vector<libtorrent::partial_piece_info>;
-%template(std_vector_announce_entry) std::vector<libtorrent::announce_entry>;
-%template(std_vector_int) std::vector<int>;
-%template(std_vector_size_type) std::vector<long long>;
-%template(std_pair_int_int) std::pair<int, int>;
-%template(std_pair_string_int) std::pair<std::string, int>;
+// %template(stdVectorPeerInfo) std::vector<libtorrent::peer_info>;
+%template(stdVectorPartialPieceInfo) std::vector<libtorrent::partial_piece_info>;
+%template(stdVectorAnnounceEntry) std::vector<libtorrent::announce_entry>;
+%template(stdVectorTorrentHandle) std::vector<libtorrent::torrent_handle>;
 
 // Equaler interface
 %rename(Equal) libtorrent::torrent_handle::operator==;
@@ -28,8 +27,21 @@
     const libtorrent::torrent_info* torrent_file() {
         return self->torrent_file().get();
     }
+
+    libtorrent::memory_storage* get_memory_storage() {
+        return ((libtorrent::memory_storage*) self->get_storage_impl());
+    }
+
+    // void remove_piece(int piece) const {
+    //     // m_picker->remove_piece(piece);
+    //     //m_picker->restore_piece(piece);
+    //     // self->m_torrent.m_picker->restore_piece(piece);
+    //     libtorrent::torrent* t = self->native_handle().get();
+    //     t->picker().restore_piece(piece);
+    // }
 }
 %ignore libtorrent::torrent_handle::torrent_file;
+%ignore libtorrent::torrent_handle::use_interface;
 
 %extend libtorrent::partial_piece_info {
     block_info_list* blocks() {
@@ -38,9 +50,22 @@
 }
 %ignore libtorrent::partial_piece_info::blocks;
 %ignore libtorrent::hash_value;
+%ignore libtorrent::block_info::peer; // linux_arm
+%ignore libtorrent::block_info::set_peer; // linux_arm
 
-%include <libtorrent/torrent_handle.hpp>
-%include <libtorrent/torrent_info.hpp>
-%include <libtorrent/torrent_status.hpp>
+%feature("director") torrent_handle;
+%feature("director") torrent_info;
+%feature("director") torrent_status;
+
 %include <libtorrent/entry.hpp>
+%include <libtorrent/torrent_info.hpp>
+%include <libtorrent/torrent_handle.hpp>
+%include <libtorrent/torrent_status.hpp>
+#include <libtorrent/torrent.hpp>
 %include <libtorrent/announce_entry.hpp>
+
+// %extend libtorrent::piece_picker {
+//     void remove_piece(int index) {
+//         m_piece_map[index] = libtorrent::piece_pos::piece_open;
+//     }
+// }

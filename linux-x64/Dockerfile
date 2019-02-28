@@ -5,7 +5,7 @@ RUN mkdir -p /build
 WORKDIR /build
 
 # Install Boost.System
-ENV BOOST_VERSION 1.679.0
+ENV BOOST_VERSION 1.69.0
 RUN curl -L https://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`.tar.bz2 | tar xvj && \
     cd boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`/ && \
     ./bootstrap.sh --prefix=${CROSS_ROOT} && \

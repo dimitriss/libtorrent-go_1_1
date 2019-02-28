@@ -48,7 +48,7 @@ RUN cd swig-rel-${SWIG_VERSION}/ && \
 # Install libtorrent
 # Changes:
 # - define WIN32, _UNICODE, IPV6_TCLASS=39
-ENV LIBTORRENT_VERSION RC_1_1
+ENV LIBTORRENT_VERSION c9d9371
 RUN curl -L https://github.com/arvidn/libtorrent/archive/`echo ${LIBTORRENT_VERSION} | sed 's/\\./_/g'`.tar.gz | tar xz && \
     cd libtorrent* && \
     ./autotool.sh && \
@@ -62,7 +62,7 @@ RUN curl -L https://github.com/arvidn/libtorrent/archive/`echo ${LIBTORRENT_VERS
     CFLAGS="${CFLAGS} -Os -Wno-psabi -Wno-deprecated-declarations -Wno-sign-compare -Wno-unused-function -Wno-unused-parameter -std=c++11 -lmswsock -DUNICODE -D_UNICODE -DWIN32 -DWIN32_LEAN_AND_MEAN -DIPV6_TCLASS=39 -D_WIN32_WINNT=0x0600" \
     CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
     LIBS="-lmswsock" \
-    ./configure --disable-debug --enable-logging=no --enable-static --disable-shared \
+    ./configure --disable-debug --enable-logging=no --enable-static --disable-shared --disable-deprecated-functions \
     --host=${CROSS_TRIPLE} --prefix=${CROSS_ROOT} \
     --with-boost=${CROSS_ROOT} --with-boost-libdir=${CROSS_ROOT}/lib && \
     \
