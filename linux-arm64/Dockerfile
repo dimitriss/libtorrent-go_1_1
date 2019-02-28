@@ -62,7 +62,7 @@ RUN curl -L https://github.com/arvidn/libtorrent/archive/`echo ${LIBTORRENT_VERS
     CC=${CROSS_TRIPLE}-gcc CXX=${CROSS_TRIPLE}-g++ \
     CFLAGS="${CFLAGS} -Os -Wno-psabi -Wno-deprecated-declarations -Wno-sign-compare -Wno-unused-function -Wno-unused-parameter -fPIC -std=c++11" \
     CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
-    ./configure --disable-debug --enable-logging=no --enable-static --disable-shared \
+    ./configure --disable-debug --enable-logging=no --enable-static --disable-shared --disable-deprecated-functions \
     --host=${CROSS_TRIPLE} --prefix=${CROSS_ROOT} \
     --with-boost=${CROSS_ROOT} --with-boost-libdir=${CROSS_ROOT}/lib && \
     \

@@ -60,7 +60,7 @@ RUN curl -L https://github.com/arvidn/libtorrent/archive/`echo ${LIBTORRENT_VERS
     CFLAGS="${CFLAGS} -Os -Wno-psabi -Wno-deprecated-declarations -Wno-sign-compare -Wno-unused-function -Wno-unused-parameter -std=c++11 -lmswsock -DUNICODE -D_UNICODE -DWIN32 -DIPV6_TCLASS=39" \
     CXXFLAGS="${CXXFLAGS} ${CFLAGS}" \
     LIBS="-lmswsock" \
-    ./configure --disable-debug --enable-logging=no --enable-static --disable-shared \
+    ./configure --disable-debug --enable-logging=no --enable-static --disable-shared --disable-deprecated-functions \
     --host=${CROSS_TRIPLE} --prefix=${CROSS_ROOT} \
     --with-boost=${CROSS_ROOT} --with-boost-libdir=${CROSS_ROOT}/lib && \
     \
