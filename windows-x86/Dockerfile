@@ -1,4 +1,4 @@
-FROM cross-compiler:windows-x86-posix
+FROM cross-compiler:windows-x86
 MAINTAINER Dimitriss
 
 RUN mkdir -p /build
@@ -45,7 +45,7 @@ RUN cd swig-rel-${SWIG_VERSION}/ && \
     ./configure && make && make install && \
     rm -rf `pwd`
 
-ENV LIBTORRENT_VERSION libtorrent_1_1_12
+ENV LIBTORRENT_VERSION RC_1_1
 RUN curl -L https://github.com/arvidn/libtorrent/archive/`echo ${LIBTORRENT_VERSION} | sed 's/\\./_/g'`.tar.gz | tar xz && \
     cd libtorrent* && \
     ./autotool.sh && \

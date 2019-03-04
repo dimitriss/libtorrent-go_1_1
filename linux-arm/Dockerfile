@@ -46,7 +46,7 @@ RUN curl -L https://github.com/swig/swig/archive/rel-${SWIG_VERSION}.tar.gz | ta
     rm -rf `pwd`
 
 # Install libtorrent
-ENV LIBTORRENT_VERSION libtorrent_1_1_12
+ENV LIBTORRENT_VERSION RC_1_1
 RUN echo "#define BOOST_SP_USE_PTHREADS" >> ${CROSS_ROOT}/include/boost/config/user.hpp
 RUN curl -L https://github.com/arvidn/libtorrent/archive/`echo ${LIBTORRENT_VERSION} | sed 's/\\./_/g'`.tar.gz | tar xz && \
     cd libtorrent* && \
