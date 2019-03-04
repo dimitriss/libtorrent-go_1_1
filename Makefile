@@ -4,7 +4,7 @@ CC = cc
 CXX = c++
 PKG_CONFIG = pkg-config
 DOCKER = docker
-DOCKER_IMAGE = dimitriss/$(NAME)
+DOCKER_IMAGE = $(NAME)
 PLATFORMS = linux-arm64 \
 		linux-arm \
 		linux-x64 \
