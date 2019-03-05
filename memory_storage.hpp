@@ -69,7 +69,7 @@ namespace libtorrent {
                         is_read = false;
                         size = 0;
 
-                        std::cerr << "DEBUG Freeing piece " << index << std::endl;
+                        //std::cerr << "DEBUG Freeing piece " << index << std::endl;
                 }
         };
 
@@ -101,7 +101,7 @@ namespace libtorrent {
                         accessed = now();
                         std::fill(buffer.begin(), buffer.end(), '\0');
 
-                        std::cerr << "DEBUG Freeing buffer " << index << std::endl;
+                        //std::cerr << "DEBUG Freeing buffer " << index << std::endl;
                 };
         };
 
@@ -156,7 +156,7 @@ namespace libtorrent {
                         piece_count = m_info->num_pieces();
                         piece_length = m_info->piece_length();
 
-                        std::cerr << "DEBUG Init with mem size " << memory_size << ", Pieces: " << piece_count <<
+                        std::cerr << "INFO Init with mem size " << memory_size << ", Pieces: " << piece_count <<
                                 ", Piece length: " << piece_length << std::endl;
 
                         for (int i = 0; i < piece_count; i++) {
@@ -169,7 +169,7 @@ namespace libtorrent {
                                 buffer_size = piece_count;
                         };
                         buffer_limit = buffer_size;
-                        std::cerr << "DEBUG Using " << buffer_size << " buffers" << std::endl;
+                        std::cerr << "INFO Using " << buffer_size << " buffers" << std::endl;
 
                         for (int i = 0; i < buffer_size; i++) {
                                 buffers.push_back(memory_buffer(i, piece_length));
@@ -205,11 +205,11 @@ namespace libtorrent {
                         };
                         buffer_limit = buffer_size;
                         if (prev_buffer_size == buffer_size) {
-                                std::cerr << "DEBUG Not increasing buffer due to same size (" << buffer_size << ")" << std::endl;
+                                //std::cerr << "DEBUG Not increasing buffer due to same size (" << buffer_size << ")" << std::endl;
                                 return;
                         };
 
-                        std::cerr << "DEBUG Increasing buffer to " << buffer_size << " buffers" << std::endl;
+                        //std::cerr << "DEBUG Increasing buffer to " << buffer_size << " buffers" << std::endl;
 
                         for (int i = prev_buffer_size; i < buffer_size; i++) {
                                 buffers.push_back(memory_buffer(i, piece_length));
@@ -232,12 +232,12 @@ namespace libtorrent {
                         };
 
                         if (!get_read_buffer(&pieces[piece])) {
-                                std::cerr << "DEBUG nobuffer" << piece << ", off: " << offset << std::endl;
+                                //std::cerr << "DEBUG nobuffer" << piece << ", off: " << offset << std::endl;
                                 restore_piece(piece);
                                 return -1;
                         };
                         if (pieces[piece].size < pieces[piece].length) {
-                                std::cerr << "DEBUG less: " << piece << ", off: " << offset << ", size: " << pieces[piece].size << ", length: " << pieces[piece].length << std::endl;
+                                //std::cerr << "DEBUG less: " << piece << ", off: " << offset << ", size: " << pieces[piece].size << ", length: " << pieces[piece].length << std::endl;
                                 restore_piece(piece);
                                 return -1;
                         };
@@ -266,11 +266,11 @@ namespace libtorrent {
                         if (!is_initialized) return 0;
 
                         if (is_logging) {
-                                std::cerr << "DEBUG readv in  p: " << piece << ", off: " << offset << std::endl;
+                                //std::cerr << "DEBUG readv in  p: " << piece << ", off: " << offset << std::endl;
                         };
 
                         if (!get_read_buffer(&pieces[piece])) {
-                                std::cerr << "DEBUG noreadbuffer: " << piece << std::endl;
+                                //std::cerr << "DEBUG noreadbuffer: " << piece << std::endl;
                                 return 0;
                         };
 
@@ -290,10 +290,12 @@ namespace libtorrent {
 
                         if (is_logging) {
                                 int size = bufs_size(bufs, num_bufs);
+								/*
                                 std::cerr << "DEBUG readv out p: " << piece << ", pl: " << pieces[piece].length 
                                         << ", bufs: " << num_bufs << "/" << bufs[0].iov_len
                                         << ", off: " << offset 
                                         << ", bs: " << buffers[pieces[piece].bi].buffer.size() << ", res: " << size << "=" << n << std::endl;
+										*/
                         };
 
                         if (pieces[piece].is_completed && offset+n >= pieces[piece].size) {
@@ -309,13 +311,13 @@ namespace libtorrent {
                         , int piece, int offset, int flags, libtorrent::storage_error& ec)
                 {
                         if (is_logging) {
-                                std::cerr << "DEBUG writev in  p: " << piece << ", off: " << offset << ", bufs: " << bufs_size(bufs, num_bufs) << std::endl;
+                                //std::cerr << "DEBUG writev in  p: " << piece << ", off: " << offset << ", bufs: " << bufs_size(bufs, num_bufs) << std::endl;
                         };
 
                         if (!is_initialized) return 0;
 
                         if (!get_write_buffer(&pieces[piece])) {
-                                std::cerr << "DEBUG nowritebuffer" << piece << std::endl;
+                                //std::cerr << "DEBUG nowritebuffer" << piece << std::endl;
                                 return 0;
                         };
 
@@ -333,10 +335,12 @@ namespace libtorrent {
                         };
 
                         if (is_logging) {
+							/*
                                 std::cerr << "DEBUG writev out p: " << piece << ", pl: " << pieces[piece].length 
                                         << ", bufs: " << num_bufs << " / " << bufs[0].iov_len
                                         << ", req: " << size << ", off: " << offset 
                                         << ", bs: " << buffers[pieces[piece].bi].buffer.size() << ", res: " << size << "=" << n << std::endl;
+										*/
                         }; 
 
                         pieces[piece].size += n;
@@ -447,7 +451,7 @@ namespace libtorrent {
                                         continue;
                                 };
 
-                                std::cerr << "DEBUG Setting buffer " << buffers[i].index << " to piece " << p->index << std::endl;
+                                //std::cerr << "DEBUG Setting buffer " << buffers[i].index << " to piece " << p->index << std::endl;
 
                                 buffers[i].is_used = true;
                                 buffers[i].pi = p->index;
@@ -480,12 +484,12 @@ namespace libtorrent {
                         boost::unique_lock<boost::mutex> scoped_lock(m_mutex);
 
                         while (buffer_used >= buffer_limit) {
-                                std::cerr << "DEBUG Trimming " << buffer_used << " to " << buffer_limit << " with reserved " << buffer_reserved << ", " << get_buffer_info() << std::endl;
+                                //std::cerr << "DEBUG Trimming " << buffer_used << " to " << buffer_limit << " with reserved " << buffer_reserved << ", " << get_buffer_info() << std::endl;
 
                                 if (!reader_pieces.empty()) {
                                         int bi = find_last_buffer(pi, true);
                                         if (bi != -1) {
-                                                std::cerr << "DEBUG Removing non-read piece: " << buffers[bi].pi << ", buffer:" << bi << std::endl;
+                                                //std::cerr << "DEBUG Removing non-read piece: " << buffers[bi].pi << ", buffer:" << bi << std::endl;
                                                 remove_piece(bi);
                                                 continue;
                                         }
@@ -493,7 +497,7 @@ namespace libtorrent {
 
                                 int bi = find_last_buffer(pi, false);
                                 if (bi != -1) {
-                                        std::cerr << "DEBUG Removing LRU piece: " << buffers[bi].pi << ", buffer:" << bi << std::endl;
+                                        //std::cerr << "DEBUG Removing LRU piece: " << buffers[bi].pi << ", buffer:" << bi << std::endl;
                                         remove_piece(bi);
                                         continue;
                                 }
@@ -552,7 +556,7 @@ namespace libtorrent {
                         // libtorrent::torrent* t = m_handle->native_handle().get();
                         // if (!t) return;
 
-                        std::cerr << "DEBUG Restoring piece: " << pi << std::endl;
+                        //std::cerr << "DEBUG Restoring piece: " << pi << std::endl;
                         // t->picker().reset_piece(pi);
                         t->picker().set_piece_priority(pi, 0);
                         t->picker().we_dont_have(pi);
@@ -598,7 +602,7 @@ namespace libtorrent {
                         if (!is_initialized) return false;
                         
                         if (!m_handle) {
-                                std::cerr << "DEBUG no handle" << std::endl;
+                                //std::cerr << "DEBUG no handle" << std::endl;
                                 return true;
                         }
 
