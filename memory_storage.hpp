@@ -262,9 +262,8 @@ namespace libtorrent {
 				
 				int available(int piece) {
                         if (!is_initialized) return 0;                        
-
-                        int available = buffers[pieces[piece].bi].buffer.size();
-                        if (available <= 0) return 0;
+                        int available = buffers[pieces[piece].bi].buffer.size();						
+                        if (available < pieces[piece].length) return 0;
 						return 1;                        
                 };
 
