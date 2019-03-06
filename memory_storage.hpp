@@ -259,6 +259,14 @@ namespace libtorrent {
 
                         return size;
                 };
+				
+				int available(int piece) {
+                        if (!is_initialized) return 0;                        
+
+                        int available = buffers[pieces[piece].bi].buffer.size();
+                        if (available <= 0) return 0;
+						return 1;                        
+                };
 
                 int readv(libtorrent::file::iovec_t const* bufs, int num_bufs
                         , int piece, int offset, int flags, libtorrent::storage_error& ec)
