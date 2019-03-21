@@ -85,7 +85,6 @@ namespace libtorrent {
         memory_buffer(int index, int length) : index(index), length(length) {
             pi = -1;
             is_used = false;
-            is_logging = false;
             buffer.resize(length);
         };
 
