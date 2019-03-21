@@ -51,11 +51,13 @@ namespace libtorrent {
         bool is_completed;
         bool is_read;
 
+
         memory_piece(int i, int length) : index(i), length(length) {
             size = 0;
             bi = -1;
             is_completed = false;
             is_read = false;
+            is_logging = false;
         };
 
         bool is_buffered() {
@@ -67,9 +69,7 @@ namespace libtorrent {
             is_completed = false;
             is_read = false;
             size = 0;
-            if (is_logging) {
-                std::cerr << "INFO Freeing piece " << index << std::endl;
-            }
+//            std::cerr << "INFO Freeing piece " << index << std::endl;
         }
     };
 
@@ -86,7 +86,7 @@ namespace libtorrent {
         memory_buffer(int index, int length) : index(index), length(length) {
             pi = -1;
             is_used = false;
-
+            is_logging = false;
             buffer.resize(length);
         };
 
@@ -99,10 +99,7 @@ namespace libtorrent {
             pi = -1;
             accessed = now();
             std::fill(buffer.begin(), buffer.end(), '\0');
-            if (is_logging) {
-                std::cerr << "INFO Freeing buffer " << index << std::endl;
-            }
-
+//            std::cerr << "INFO Freeing buffer " << index << std::endl;
         };
     };
 
