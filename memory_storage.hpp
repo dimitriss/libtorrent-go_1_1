@@ -57,7 +57,6 @@ namespace libtorrent {
             bi = -1;
             is_completed = false;
             is_read = false;
-            is_logging = false;
         };
 
         bool is_buffered() {
