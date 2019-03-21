@@ -15,7 +15,7 @@ RUN curl -L https://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/boos
     rm -rf `pwd`
 
 # Install OpenSSL
-ENV OPENSSL_VERSION 1.1.1
+ENV OPENSSL_VERSION 1.1.1b
 RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | tar xvz && \
     cd openssl-${OPENSSL_VERSION}/ && \
     CROSS_COMPILE=${CROSS_TRIPLE}- ./Configure threads no-shared mingw --prefix=${CROSS_ROOT} && \
@@ -24,7 +24,7 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
 
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.12
+ENV GO_VERSION go1.12.1
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
