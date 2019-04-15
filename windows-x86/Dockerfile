@@ -24,7 +24,7 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
 
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.12.1
+ENV GO_VERSION go1.12.4
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \

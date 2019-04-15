@@ -24,7 +24,7 @@ RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | ta
 
 # Install Golang
 ENV BOOTSTRAP_GO_VERSION go1.4.3
-ENV GO_VERSION go1.12.1
+ENV GO_VERSION go1.12.4
 RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${BOOTSTRAP_GO_VERSION}.tar.gz | tar xvz && \
     cd /usr/local/go-${BOOTSTRAP_GO_VERSION}/src && \
@@ -33,7 +33,7 @@ RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${GO_VERSION}.tar.gz | tar xvz
 RUN cd /usr/local/go-${GO_VERSION}/src && \
 	echo ${GO_VERSION} > /usr/local/go-${GO_VERSION}/VERSION && \
-    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
+    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=6 CGO_ENABLED=1 ./make.bash
 ENV PATH ${PATH}:/usr/local/go-${GO_VERSION}/bin
 
 # Install SWIG

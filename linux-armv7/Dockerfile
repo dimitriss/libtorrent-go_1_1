@@ -1,4 +1,4 @@
-FROM cross-compiler:linux-x64
+FROM cross-compiler:linux-armv7
 MAINTAINER Dimitriss
 
 RUN mkdir -p /build
@@ -10,7 +10,7 @@ RUN curl -L https://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/boos
     cd boost_`echo ${BOOST_VERSION} | sed 's/\\./_/g'`/ && \
     ./bootstrap.sh --prefix=${CROSS_ROOT} && \
     echo "using gcc : linux : ${CROSS_TRIPLE}-c++ ;" > ${HOME}/user-config.jam && \
-    ./b2 --with-date_time --with-system --with-chrono --with-random --prefix=${CROSS_ROOT} toolset=gcc-linux link=static variant=release threading=multi target-os=linux install && \
+    ./b2 cxxflags=-fPIC cflags=-fPIC --with-date_time --with-system --with-chrono --with-random --prefix=${CROSS_ROOT} toolset=gcc-linux link=static variant=release threading=multi target-os=linux install && \
     rm -rf ${HOME}/user-config.jam && \
     rm -rf `pwd`
 
@@ -18,7 +18,7 @@ RUN curl -L https://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/boos
 ENV OPENSSL_VERSION 1.1.1b
 RUN curl -L http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | tar xvz && \
     cd openssl-${OPENSSL_VERSION}/ && \
-    CROSS_COMPILE=${CROSS_TRIPLE}- ./Configure threads no-shared linux-x86_64 --prefix=${CROSS_ROOT} && \
+    CROSS_COMPILE=${CROSS_TRIPLE}- ./Configure threads no-shared linux-armv4 -fPIC --prefix=${CROSS_ROOT} && \
     make && make install && \
     rm -rf `pwd`
 
@@ -33,7 +33,7 @@ RUN cd /usr/local && \
     curl -L https://github.com/golang/go/archive/${GO_VERSION}.tar.gz | tar xvz
 RUN cd /usr/local/go-${GO_VERSION}/src && \
 	echo ${GO_VERSION} > /usr/local/go-${GO_VERSION}/VERSION && \
-    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=amd64 CGO_ENABLED=1 ./make.bash
+    GOROOT_BOOTSTRAP=/usr/local/go-${BOOTSTRAP_GO_VERSION} CC_FOR_TARGET=${CROSS_TRIPLE}-cc CXX_FOR_TARGET=${CROSS_TRIPLE}-c++ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 ./make.bash
 ENV PATH ${PATH}:/usr/local/go-${GO_VERSION}/bin
 
 # Install SWIG
@@ -47,13 +47,15 @@ RUN curl -L https://github.com/swig/swig/archive/rel-${SWIG_VERSION}.tar.gz | ta
 
 # Install libtorrent
 ENV LIBTORRENT_VERSION RC_1_1
+RUN echo "#define BOOST_SP_USE_PTHREADS" >> ${CROSS_ROOT}/include/boost/config/user.hpp
 RUN curl -L https://github.com/arvidn/libtorrent/archive/`echo ${LIBTORRENT_VERSION} | sed 's/\\./_/g'`.tar.gz | tar xz && \
     cd libtorrent* && \
     ./autotool.sh && \
     \
     sed -i 's/$PKG_CONFIG openssl --libs-only-/$PKG_CONFIG openssl --static --libs-only-/' ./configure && \
-    sed -i -e s/Windows.h/windows.h/ -e s/Wincrypt.h/wincrypt.h/ ./ed25519/src/seed.cpp && \
-        touch configure.ac aclocal.m4 configure Makefile.am Makefile.in && \
+    sed -i '/-msse4.2/d' configure && \
+    sed -i '/-msse4.2/d' configure.ac && \
+    touch configure.ac aclocal.m4 configure Makefile.am Makefile.in && \
     \
     PKG_CONFIG_PATH=${CROSS_ROOT}/lib/pkgconfig/ \
     CC=${CROSS_TRIPLE}-gcc CXX=${CROSS_TRIPLE}-g++ \
